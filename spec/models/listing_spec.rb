@@ -1,26 +1,27 @@
 describe Listing do
   describe 'attributes' do
+    let(:listing) do
+      Listing.new(title: 'Beautiful Apartment on Main Street',
+                  description: 'Whole house for rent on mountain. Many bedrooms.',
+                  address: '123 Main Street',
+                  listing_type: 'shared room',
+                  price: 15.00)
+    end
 
-    let(:listing) { Listing.new(title: 'Beautiful Apartment on Main Street',
-                                description: "Whole house for rent on mountain. Many bedrooms.",
-                                address: '123 Main Street',
-                                listing_type: 'shared room',
-                                price: 15.00) }
-
-    it 'has a title' do 
-      expect(listing.title).to eq("Beautiful Apartment on Main Street")
+    it 'has a title' do
+      expect(listing.title).to eq('Beautiful Apartment on Main Street')
     end
 
     it 'has a description' do
-      expect(listing.description).to eq("Whole house for rent on mountain. Many bedrooms.")
+      expect(listing.description).to eq('Whole house for rent on mountain. Many bedrooms.')
     end
 
-    it 'has an address' do 
+    it 'has an address' do
       expect(@listing1.address).to eq('123 Main Street')
     end
 
-    it 'has a listing type' do 
-      expect(@listing2.listing_type).to eq("shared room")
+    it 'has a listing type' do
+      expect(@listing2.listing_type).to eq('shared room')
     end
 
     it 'has a price' do
@@ -45,33 +46,32 @@ describe Listing do
   end
 
   describe 'has_many associations' do
-    
-    
-
     before :each do
-      @older_reservation = Reservation.create(checkin: 10.days.ago, 
-                                              listing: listing, 
+      @older_reservation = Reservation.create(checkin: 10.days.ago,
+                                              listing: listing,
                                               checkout: 5.days.ago, status: 'accepted')
-      @recent_reservation = Reservation.create(checkin: 30.days.ago, 
-                                              listing: listing, checkout: 29.days.ago, 
-                                              status: 'accepted')
+      @recent_reservation = Reservation.create(checkin: 30.days.ago,
+                                               listing: listing, checkout: 29.days.ago,
+                                               status: 'accepted')
       @older_reservation.guest = bart_simpson
       @older_reservation.save
       @recent_reservation.guest = lisa_simpson
       @recent_reservation.save
       @review = Review.create(rating: 1, description: 'it was good', reservation_id: @recent_reservation.id)
       @other_review = Review.create(rating: 4, description: 'also good', reservation_id: @older_reservation.id)
-      
+
       listing.reload
     end
 
-    let(:listing) { listing = Listing.create(address: '123 Main Street',
-                                            listing_type: "private room",
-                                            title: "Foo",
-                                            description: "Foo",
-                                            price: "150.00",
-                                            neighborhood: Neighborhood.create, 
-                                            host: User.create) }
+    let(:listing) do
+      listing = Listing.create(address: '123 Main Street',
+                               listing_type: 'private room',
+                               title: 'Foo',
+                               description: 'Foo',
+                               price: '150.00',
+                               neighborhood: Neighborhood.create,
+                               host: User.create)
+    end
 
     let(:bart_simpson) { User.create }
     let(:lisa_simpson) { User.create }
@@ -118,13 +118,13 @@ describe Listing do
       expect(listing.errors.full_messages).to include "Price can't be blank"
     end
 
-    it 'is invalid without an associated neighborhood' do 
+    it 'is invalid without an associated neighborhood' do
       expect(listing.errors.full_messages).to include "Neighborhood can't be blank"
     end
   end
 
   describe 'callback methods' do
-    let(:los_angelos) { City.create(name: "Los Angeles") }
+    let(:los_angelos) { City.create(name: 'Los Angeles') }
     let(:santa_monica) { Neighborhood.create(name: 'Santa Monica', city: los_angelos) }
 
     context 'when listing created' do
@@ -135,12 +135,12 @@ describe Listing do
         expect(user.host?).to eq(false)
 
         listing = Listing.create(address: '123 Main Street',
-          listing_type: "private room",
-          title: "Foo",
-          description: "Foo",
-          price: "150.00",
-          neighborhood: santa_monica,
-          host: user)
+                                 listing_type: 'private room',
+                                 title: 'Foo',
+                                 description: 'Foo',
+                                 price: '150.00',
+                                 neighborhood: santa_monica,
+                                 host: user)
         expect(user.reload.host?).to eq(true)
       end
     end
@@ -149,32 +149,38 @@ describe Listing do
       let(:user) { User.create(name: 'Tina Fey', host: true) }
       let(:other_user) { User.create(name: 'Not Tina Fey') }
 
-      let(:first_listing) { Listing.create(address: '123 Main Street',
-          listing_type: "private room",
-          title: "Foo",
-          description: "Foo",
-          price: "150.00",
-          neighborhood: santa_monica,
-          host: user) }
-        let(:second_listing) { Listing.create(address: '123 Main Street',
-          listing_type: "private room",
-          title: "Foo",
-          description: "Foo",
-          price: "150.00",
-          neighborhood: santa_monica,
-          host: user) }
-        let(:unrelated_listing) { Listing.create(address: '123 Main Street',
-          listing_type: "private room",
-          title: "Foo",
-          description: "Foo",
-          price: "150.00",
-          neighborhood: santa_monica,
-          host: user) }
+      let(:first_listing) do
+        Listing.create(address: '123 Main Street',
+                       listing_type: 'private room',
+                       title: 'Foo',
+                       description: 'Foo',
+                       price: '150.00',
+                       neighborhood: santa_monica,
+                       host: user)
+      end
+      let(:second_listing) do
+        Listing.create(address: '123 Main Street',
+                       listing_type: 'private room',
+                       title: 'Foo',
+                       description: 'Foo',
+                       price: '150.00',
+                       neighborhood: santa_monica,
+                       host: user)
+      end
+      let(:unrelated_listing) do
+        Listing.create(address: '123 Main Street',
+                       listing_type: 'private room',
+                       title: 'Foo',
+                       description: 'Foo',
+                       price: '150.00',
+                       neighborhood: santa_monica,
+                       host: user)
+      end
 
-        before :each do 
-          first_listing
-          second_listing
-        end
+      before :each do
+        first_listing
+        second_listing
+      end
 
       it 'does not change the host status to false' do
         expect(user.host?).to eq(true)
@@ -187,29 +193,35 @@ describe Listing do
       let(:user) { User.create(name: 'Tina Fey', host: true) }
       let(:other_user) { User.create(name: 'Not Tina Fey') }
 
-      let(:first_listing) { Listing.create(address: '123 Main Street', 
-          listing_type: "private room",
-          title: "Foo",
-          description: "Foo",
-          price: "150.00",
-          neighborhood: santa_monica,
-          host: user) }
-        let(:second_listing) { Listing.create(address: '123 Main Street', 
-          listing_type: "private room", 
-          title: "Foo", 
-          description: "Foo", 
-          price: "150.00", 
-          neighborhood: santa_monica, 
-          host: user) } 
-        let(:unrelated_listing) { Listing.create(address: '123 Main Street', 
-          listing_type: "private room", 
-          title: "Foo", 
-          description: "Foo", 
-          price: "150.00", 
-          neighborhood: santa_monica, 
-          host: user) } 
+      let(:first_listing) do
+        Listing.create(address: '123 Main Street',
+                       listing_type: 'private room',
+                       title: 'Foo',
+                       description: 'Foo',
+                       price: '150.00',
+                       neighborhood: santa_monica,
+                       host: user)
+      end
+      let(:second_listing) do
+        Listing.create(address: '123 Main Street',
+                       listing_type: 'private room',
+                       title: 'Foo',
+                       description: 'Foo',
+                       price: '150.00',
+                       neighborhood: santa_monica,
+                       host: user)
+      end
+      let(:unrelated_listing) do
+        Listing.create(address: '123 Main Street',
+                       listing_type: 'private room',
+                       title: 'Foo',
+                       description: 'Foo',
+                       price: '150.00',
+                       neighborhood: santa_monica,
+                       host: user)
+      end
 
-      it 'changes host status to false' do 
+      it 'changes host status to false' do
         expect(user.host).to eq(true)
         first_listing.destroy
         second_listing.destroy
@@ -218,28 +230,27 @@ describe Listing do
     end
   end
 
-
-  describe "#average_review_rating" do
-    before do 
+  describe '#average_rating' do
+    before do
       recent_reservation = Reservation.create(listing: listing, checkin: 10.days.ago, checkout: 5.days.ago, status: 'accepted')
       older_reservation = Reservation.create(listing: listing, checkin: 30.days.ago, checkout: 29.days.ago, status: 'accepted')
       review = Review.create(rating: 1, description: 'it was good', reservation_id: recent_reservation.id)
       other_review = Review.create(rating: 4, description: 'also good', reservation_id: older_reservation.id)
     end
-    
-    
 
-    let(:listing) { listing = Listing.create(address: '123 Main Street',
-                                            listing_type: "private room",
-                                            title: "Foo",
-                                            description: "Foo",
-                                            price: "150.00",
-                                            neighborhood: Neighborhood.create, 
-                                            host: User.create) }
+    let(:listing) do
+      listing = Listing.create(address: '123 Main Street',
+                               listing_type: 'private room',
+                               title: 'Foo',
+                               description: 'Foo',
+                               price: '150.00',
+                               neighborhood: Neighborhood.create,
+                               host: User.create)
+    end
 
     it 'knows its average ratings from its reviews' do
       listing.reload
-      expect(listing.average_review_rating).to eq(2.5)
+      expect(listing.average_rating).to eq(2.5)
     end
-  end  
+  end
 end
